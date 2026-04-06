@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FreshDrop App</title>
+
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="/icon-192.png">
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', sans-serif;
+        background: #eef2f7;
+    }
+
+    .app {
+        max-width: 420px;
+        margin: auto;
+        background: white;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* HEADER */
+    .header {
+        background: linear-gradient(135deg, #2196F3, #1565C0);
+        color: white;
+        padding: 20px;
+        border-bottom-left-radius: 25px;
+        border-bottom-right-radius: 25px;
+    }
+
+    .header h1 {
+        margin: 0;
+        font-size: 24px;
+    }
+
+    .header p {
+        margin-top: 5px;
+        font-size: 13px;
+        opacity: 0.9;
+    }
+
+    /* CONTENT */
+    .content {
+        padding: 20px;
+        flex: 1;
+    }
+
+    .card {
+        background: white;
+        border-radius: 20px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+
+    .card h3 {
+        margin-bottom: 10px;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 25px;
+        background: #2196F3;
+        color: white;
+        font-size: 15px;
+        margin-top: 10px;
+        cursor: pointer;
+    }
+
+    /* GRID */
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .grid-item {
+        background: #f5f7fb;
+        border-radius: 15px;
+        padding: 15px;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .grid-item span {
+        font-size: 22px;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    /* NAVBAR */
+    .nav {
+        display: flex;
+        justify-content: space-around;
+        padding: 10px;
+        border-top: 1px solid #ddd;
+        background: white;
+    }
+
+    .nav div {
+        text-align: center;
+        font-size: 12px;
+        color: #777;
+    }
+
+    .nav .active {
+        color: #2196F3;
+        font-weight: bold;
+    }
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>🌿 FreshDrop</h1>
+        <p>Fast Delivery. Fresh Products.</p>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <!-- ACTION CARD -->
+        <div class="card">
+            <h3>🚀 Get Started</h3>
+            <button class="btn" onclick="startApp()">Browse Products</button>
+            <button class="btn" id="installBtn" style="display:none;">Install App</button>
+        </div>
+
+        <!-- FEATURES -->
+        <div class="card">
+            <h3>✨ Features</h3>
+            <div class="grid">
+                <div class="grid-item"><span>🛒</span>Shop</div>
+                <div class="grid-item"><span>🚚</span>Delivery</div>
+                <div class="grid-item"><span>📍</span>Nearby</div>
+                <div class="grid-item"><span>⚡</span>Offline</div>
+            </div>
+        </div>
+
+        <!-- STATUS -->
+        <div class="card">
+            <h3>📦 Latest Update</h3>
+            <p>Your last order will appear here.</p>
+        </div>
+
+    </div>
+
+    <!-- NAVIGATION -->
+    <div class="nav">
+        <div class="active">🏠 Home</div>
+        <div>🛒 Shop</div>
+        <div>📦 Orders</div>
+        <div>👤 Profile</div>
+    </div>
+
+</div>
+
+<script>
+function startApp(){
+    alert("Welcome to FreshDrop 🌿");
+}
+
+// SERVICE WORKER
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js');
+    });
+}
+
+let deferredPrompt;
+const installBtn = document.getElementById('installBtn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = 'block';
+});
+
+installBtn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+    }
+});
+
+window.addEventListener('appinstalled', () => {
+    console.log("App Installed ✅");
+});
+</script src="app.js"></script>
+
+</body>
+</html>
